@@ -19,6 +19,7 @@ class Pinjaman extends Model
         'tanggal_pencairan',
         'angsuran_pertama_jatuh_tempo',
         'referensi_persetujuan',
+        'referensi_pencairan',
         'jasa_flat_bulanan_snapshot',
         'snapshot_ketentuan',
         'status',
@@ -40,6 +41,11 @@ class Pinjaman extends Model
     public function anggota(): BelongsTo
     {
         return $this->belongsTo(Anggota::class, 'anggota_id');
+    }
+
+    public function ketentuan(): BelongsTo
+    {
+        return $this->belongsTo(KetentuanPinjaman::class, 'ketentuan_pinjaman_id');
     }
 
     public function angsuran(): HasMany

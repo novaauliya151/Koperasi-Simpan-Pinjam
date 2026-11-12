@@ -141,6 +141,8 @@
                             <th scope="col">Periode</th>
                             <th scope="col" class="text-end">Nominal</th>
                             <th scope="col">Metode</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,11 +166,73 @@
                                     Rp {{ number_format((float) $transaction->nominal, 0, ',', '.') }}
                                 </td>
                                 <td>{{ $transaction->metode ?? '—' }}</td>
+                                <td>
+                                    <span class="badge text-bg-{{
+                                        $transaction->status === 'tercatat'
+                                            ? 'success'
+                                            : ($transaction->status === 'pembalikan' ? 'info' : 'secondary')
+                                    }}">
+                                        {{ ucfirst($transaction->status) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <a
+                                            href="{{ route(
+                                                auth()->user()->role === 'petugas'
+                                                    ? 'petugas.simpanan.receipt'
+                                                    : 'anggota.simpanan.receipt',
+                                                $transaction,
+                                            ) }}"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+                                            Bukti
+                                        </a>
+                                        @if (
+                                            auth()->user()->role === 'petugas'
+                                            && $transaction->status === 'tercatat'
+                                            && $transaction->pembalikan_dari_id === null
+                                        )
+                                            <details>
+                                                <summary class="btn btn-sm btn-outline-danger">
+                                                    Batalkan
+                                                </summary>
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route('petugas.simpanan.cancel', $transaction) }}"
+                                                    class="card card-body mt-2"
+                                                >
+                                                    @csrf
+                                                    <label
+                                                        for="alasan_koreksi_{{ $transaction->id }}"
+                                                        class="form-label small"
+                                                    >
+                                                        Alasan pembatalan
+                                                    </label>
+                                                    <textarea
+                                                        id="alasan_koreksi_{{ $transaction->id }}"
+                                                        name="alasan_koreksi"
+                                                        rows="2"
+                                                        maxlength="2000"
+                                                        class="form-control"
+                                                        required
+                                                    ></textarea>
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-danger btn-sm mt-2"
+                                                    >
+                                                        Konfirmasi pembatalan
+                                                    </button>
+                                                </form>
+                                            </details>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
                                 <td
-                                    colspan="{{ auth()->user()->role === 'petugas' ? 7 : 6 }}"
+                                    colspan="{{ auth()->user()->role === 'petugas' ? 9 : 8 }}"
                                     class="py-4 text-center text-secondary"
                                 >
                                     Belum ada transaksi simpanan yang cocok dengan filter.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anggota;
+use App\Models\KetentuanPinjaman;
 use App\Models\LogAktivitas;
 use App\Models\Pinjaman;
 use App\Models\TransaksiSimpanan;
@@ -59,6 +60,21 @@ class DashboardController extends Controller
             return $month;
         });
 
+        $currentLoanTerms = KetentuanPinjaman::query()
+            ->where('is_active', true)
+            ->whereDate('berlaku_mulai', '<=', today())
+            ->orderByDesc('berlaku_mulai')
+            ->orderByDesc('id')
+            ->first();
+        $loanTerms = $currentLoanTerms
+            ? [
+                'metode' => $currentLoanTerms->metode_perhitungan ?? 'flat',
+                'jasa_flat_bulanan' => $currentLoanTerms->jasa_flat_bulanan,
+                'tenor_bulan' => $currentLoanTerms->tenor_bulan
+                    ?: config('pinjaman.aturan.tenor_bulan'),
+            ]
+            : config('pinjaman.aturan');
+
         return [
             'activeMembers' => Anggota::where('status_keanggotaan', 'aktif')->count(),
             'pendingMembers' => Anggota::where(
@@ -66,8 +82,11 @@ class DashboardController extends Controller
                 'menunggu_verifikasi',
             )->count(),
             'savingsTotal' => TransaksiSimpanan::where('status', 'tercatat')->sum('nominal'),
+            'savingsTransactions' => TransaksiSimpanan::where('status', 'tercatat')->count(),
+            'cancelledSavings' => TransaksiSimpanan::where('status', 'dibatalkan')->count(),
             'activeLoans' => Pinjaman::where('status', 'aktif')->count(),
             'activeLoanTotal' => Pinjaman::where('status', 'aktif')->sum('pokok'),
+            'loanTerms' => $loanTerms,
             'monthlySavings' => $monthlySavings,
             'hasSavingsActivity' => $savings->isNotEmpty(),
             'recentActivity' => LogAktivitas::with('user:id,name')
@@ -86,6 +105,11 @@ class DashboardController extends Controller
                 'menunggu_verifikasi',
             )->count(),
             'activeMembers' => Anggota::where('status_keanggotaan', 'aktif')->count(),
+            'savingsTotal' => TransaksiSimpanan::where('status', 'tercatat')->sum('nominal'),
+            'savingsTransactions' => TransaksiSimpanan::where('status', 'tercatat')->count(),
+            'cancelledSavings' => TransaksiSimpanan::where('status', 'dibatalkan')->count(),
+            'activeLoans' => Pinjaman::where('status', 'aktif')->count(),
+            'activeLoanTotal' => Pinjaman::where('status', 'aktif')->sum('pokok'),
             'recentMembers' => Anggota::latest('created_at')->limit(5)->get(),
         ];
     }
@@ -102,6 +126,7 @@ class DashboardController extends Controller
                     ->sum('nominal')
                 : 0,
             'savingsCount' => $member?->simpanan()->where('status', 'tercatat')->count() ?? 0,
+            'cancelledSavings' => $member?->simpanan()->where('status', 'dibatalkan')->count() ?? 0,
             'activeLoans' => $member
                 ? Pinjaman::where('anggota_id', $member->id)
                     ->where('status', 'aktif')
@@ -112,10 +137,15 @@ class DashboardController extends Controller
                     ->where('status', 'aktif')
                     ->sum('pokok')
                 : 0,
+            'recentLoans' => $member
+                ? $member->pinjaman()
+                    ->latest('tanggal_pencairan')
+                    ->limit(3)
+                    ->get()
+                : collect(),
             'recentSavings' => $member
                 ? $member->simpanan()
                     ->with('jenis')
-                    ->where('status', 'tercatat')
                     ->latest('tanggal_transaksi')
                     ->limit(5)
                     ->get()

@@ -65,6 +65,115 @@ class SavingsTransactionController extends Controller
         ]);
     }
 
+    public function receipt(Request $request, TransaksiSimpanan $transaction): View
+    {
+        $transactionQuery = TransaksiSimpanan::query()
+            ->with([
+                'anggota:id,nomor_anggota,nama',
+                'jenis:id,kode,nama',
+                'petugas:id,name',
+                'pembalikan:id,nomor_transaksi,status,alasan_koreksi',
+                'pembatalan:id,nomor_transaksi,status,alasan_koreksi',
+            ])
+            ->whereKey($transaction->id);
+
+        if ($request->user()->role === 'anggota') {
+            $transactionQuery->where(
+                'anggota_id',
+                $request->user()->anggota?->id ?? 0,
+            );
+        }
+
+        $transaction = $transactionQuery->firstOrFail();
+
+        return view('savings.receipt', [
+            'transaction' => $transaction,
+            'staffView' => $request->user()->role === 'petugas',
+        ]);
+    }
+
+    public function cancel(Request $request, TransaksiSimpanan $transaction): RedirectResponse
+    {
+        $data = $request->validate([
+            'alasan_koreksi' => ['required', 'string', 'max:2000'],
+        ]);
+
+        try {
+            DB::transaction(function () use ($data, $request, $transaction): void {
+                $original = TransaksiSimpanan::query()
+                    ->whereKey($transaction->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $hasReversal = TransaksiSimpanan::query()
+                    ->where('pembalikan_dari_id', $original->id)
+                    ->exists();
+
+                if (
+                    $original->status !== 'tercatat'
+                    || $original->pembalikan_dari_id !== null
+                    || $hasReversal
+                ) {
+                    throw ValidationException::withMessages([
+                        'transaksi' => 'Transaksi ini sudah dibatalkan atau tidak dapat dibatalkan.',
+                    ]);
+                }
+
+                $original->update([
+                    'status' => 'dibatalkan',
+                    'alasan_koreksi' => $data['alasan_koreksi'],
+                ]);
+
+                $reversal = TransaksiSimpanan::create([
+                    'nomor_transaksi' => $this->nextTransactionNumber(),
+                    'anggota_id' => $original->anggota_id,
+                    'jenis_simpanan_id' => $original->jenis_simpanan_id,
+                    'ketentuan_simpanan_id' => $original->ketentuan_simpanan_id,
+                    'jenis_simpanan_kode_snapshot' => $original->jenis_simpanan_kode_snapshot,
+                    'jenis_simpanan_nama_snapshot' => $original->jenis_simpanan_nama_snapshot,
+                    'nominal_ketentuan_snapshot' => $original->nominal_ketentuan_snapshot,
+                    'tanggal_transaksi' => now()->toDateString(),
+                    'periode' => $original->periode,
+                    'nominal' => $original->nominal,
+                    'metode' => $original->metode,
+                    'keterangan' => 'Pembalikan dari '.$original->nomor_transaksi,
+                    'status' => 'pembalikan',
+                    'dibuat_oleh' => $request->user()->id,
+                    'pembalikan_dari_id' => $original->id,
+                    'alasan_koreksi' => $data['alasan_koreksi'],
+                ]);
+
+                LogAktivitas::create([
+                    'user_id' => $request->user()->id,
+                    'aksi' => 'savings.reversed',
+                    'subjek_tipe' => TransaksiSimpanan::class,
+                    'subjek_id' => $original->id,
+                    'alasan' => $data['alasan_koreksi'],
+                    'perubahan' => [
+                        'status' => ['old' => 'tercatat', 'new' => 'dibatalkan'],
+                        'pembalikan_id' => ['new' => $reversal->id],
+                    ],
+                    'terjadi_pada' => now(),
+                ]);
+            });
+        } catch (QueryException $exception) {
+            $alreadyReversed = TransaksiSimpanan::query()
+                ->where('pembalikan_dari_id', $transaction->id)
+                ->exists();
+
+            if (! $alreadyReversed) {
+                throw $exception;
+            }
+
+            throw ValidationException::withMessages([
+                'transaksi' => 'Transaksi ini sudah dibatalkan.',
+            ]);
+        }
+
+        return redirect()->route('petugas.simpanan.index')
+            ->with('status', 'Transaksi simpanan berhasil dibatalkan dan tercatat di log aktivitas.');
+    }
+
     public function create(): View
     {
         return view('staff.savings.create', [
@@ -234,8 +343,9 @@ class SavingsTransactionController extends Controller
                 'anggota:id,nomor_anggota,nama',
                 'jenis:id,kode,nama',
                 'petugas:id,name',
+                'pembalikan:id,nomor_transaksi',
+                'pembatalan:id,nomor_transaksi',
             ])
-            ->where('status', 'tercatat')
             ->when($memberId !== null, fn ($query) => $query->where('anggota_id', $memberId))
             ->when(
                 $filters['anggota_id'] ?? null,

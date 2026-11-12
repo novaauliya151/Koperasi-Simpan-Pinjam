@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TransaksiSimpanan extends Model
 {
@@ -32,6 +33,16 @@ class TransaksiSimpanan extends Model
     public function ketentuanSnapshot(): BelongsTo
     {
         return $this->belongsTo(KetentuanSimpanan::class, 'ketentuan_simpanan_id');
+    }
+
+    public function pembalikan(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'pembalikan_dari_id');
+    }
+
+    public function pembatalan(): HasOne
+    {
+        return $this->hasOne(self::class, 'pembalikan_dari_id');
     }
 }
 

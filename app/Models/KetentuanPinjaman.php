@@ -14,6 +14,12 @@ class KetentuanPinjaman extends Model
         'jasa_flat_bulanan',
         'berlaku_mulai',
         'is_active',
+        'metode_perhitungan',
+        'tenor_bulan',
+        'pembulatan',
+        'dasar',
+        'sumber',
+        'keterangan',
     ];
 
     protected function casts(): array
@@ -22,6 +28,7 @@ class KetentuanPinjaman extends Model
             'jasa_flat_bulanan' => 'decimal:5',
             'berlaku_mulai' => 'date',
             'is_active' => 'boolean',
+            'tenor_bulan' => 'array',
         ];
     }
 

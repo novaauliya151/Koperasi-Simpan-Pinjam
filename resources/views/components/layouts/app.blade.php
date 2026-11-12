@@ -17,7 +17,10 @@
     @auth
         <div class="app-shell">
             <aside
-                class="sidebar offcanvas-lg offcanvas-start d-flex flex-column"
+                class="sidebar offcanvas-lg offcanvas-start d-flex flex-column
+                    {{ request()->routeIs('petugas.simpanan.receipt', 'anggota.simpanan.receipt')
+                        ? 'd-print-none'
+                        : '' }}"
                 tabindex="-1"
                 id="appSidebar"
                 aria-labelledby="appSidebarLabel"
@@ -84,6 +87,17 @@
                                     </svg>
                                     Jenis simpanan
                                 </a>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('admin.loan-terms.*') ? 'active' : '' }}"
+                                    href="{{ route('admin.loan-terms.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                        <path d="M7 10h10M7 14h5" />
+                                    </svg>
+                                    Ketentuan pinjaman
+                                </a>
                                 <div class="sidebar-section-label mt-4">AKTIVITAS</div>
                                 <a
                                     class="nav-link
@@ -122,6 +136,17 @@
                                     </svg>
                                     Setoran simpanan
                                 </a>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('petugas.pinjaman.*') ? 'active' : '' }}"
+                                    href="{{ route('petugas.pinjaman.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                        <path d="M7 10h10M7 14h5" />
+                                    </svg>
+                                    Pinjaman
+                                </a>
                             @elseif (auth()->user()->role === 'anggota')
                                 <div class="sidebar-section-label mt-4">SIMPANAN</div>
                                 <a
@@ -134,6 +159,17 @@
                                         <path d="M9 3h6v3H9z" />
                                     </svg>
                                     Simpanan saya
+                                </a>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('anggota.pinjaman.*') ? 'active' : '' }}"
+                                    href="{{ route('anggota.pinjaman.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                        <path d="M7 10h10M7 14h5" />
+                                    </svg>
+                                    Pinjaman saya
                                 </a>
                             @endif
                         </nav>
@@ -172,7 +208,10 @@
             </aside>
 
             <main class="app-main">
-                <header class="topbar">
+                <header class="topbar
+                    {{ request()->routeIs('petugas.simpanan.receipt', 'anggota.simpanan.receipt')
+                        ? 'd-print-none'
+                        : '' }}">
                     <button
                         class="btn btn-outline-secondary sidebar-toggle d-lg-none"
                         type="button"
