@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\SavingTypeController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Staff\MemberController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,10 +18,10 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
     Route::get('/profil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update');
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function (): void {
-        Route::view('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
         Route::resource('akun', AccountController::class)
             ->parameters(['akun' => 'user'])
             ->only(['index', 'create', 'store', 'edit', 'update'])
@@ -43,7 +44,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     });
 
     Route::middleware('role:petugas')->prefix('petugas')->name('petugas.')->group(function (): void {
-        Route::view('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
         Route::patch('/anggota/{anggota}/status', [MemberController::class, 'updateStatus'])
             ->name('anggota.status');
         Route::resource('anggota', MemberController::class)
@@ -52,7 +53,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     });
 
     Route::middleware('role:anggota')->prefix('anggota')->name('anggota.')->group(function (): void {
-        Route::view('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard', DashboardController::class)->name('dashboard');
     });
 });
 
