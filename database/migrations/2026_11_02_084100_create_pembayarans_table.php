@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('referensi', 100)->nullable();
             $table->string('status', 20)->default('tercatat')->index();
             $table->foreignId('dibuat_oleh')->constrained('users')->restrictOnDelete();
-            $table->foreignId('pembalikan_dari_id')->nullable()->unique()->constrained('pembayarans')->restrictOnDelete();
+            $table->foreignId('pembalikan_dari_id')
+                ->nullable()
+                ->unique()
+                ->constrained('pembayarans')
+                ->restrictOnDelete();
             $table->text('alasan_koreksi')->nullable();
             $table->timestamps();
         });
