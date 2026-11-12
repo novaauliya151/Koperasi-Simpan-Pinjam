@@ -199,6 +199,68 @@ class LoanRecordingTest extends TestCase
             ->assertNotFound();
     }
 
+    public function test_staff_records_full_installments_and_loan_becomes_paid_when_all_obligations_are_settled(): void
+    {
+        [$staff, $member] = $this->prepareLoan();
+        $data = $this->loanData($member);
+        $data['tanggal_pencairan'] = now()->subMonths(3)->toDateString();
+        $data['angsuran_pertama_jatuh_tempo'] = now()->subMonths(2)->toDateString();
+        $this->actingAs($staff)->post('/petugas/pinjaman', $data);
+        $loan = Pinjaman::firstOrFail();
+
+        for ($installmentNumber = 1; $installmentNumber <= 3; $installmentNumber++) {
+            $installment = $loan->angsuran()->where('urutan', $installmentNumber)->firstOrFail();
+
+            $this->post('/petugas/pinjaman/'.$loan->id.'/pembayaran', [
+                'angsuran_id' => $installment->id,
+                'tanggal_pembayaran' => today()->toDateString(),
+                'metode' => 'tunai',
+                'referensi' => 'BUKTI-'.$installmentNumber,
+            ])->assertRedirect('/petugas/pinjaman/'.$loan->id);
+        }
+
+        $firstInstallment = $loan->angsuran()->where('urutan', 1)->firstOrFail();
+        $this->post('/petugas/pinjaman/'.$loan->id.'/pembayaran', [
+            'angsuran_id' => $firstInstallment->id,
+            'tanggal_pembayaran' => today()->toDateString(),
+            'metode' => 'tunai',
+        ])->assertSessionHasErrors('angsuran_id');
+
+        $this->assertDatabaseCount('pembayarans', 3);
+        $this->assertDatabaseCount('alokasi_pembayarans', 3);
+        $this->assertSame(1030000.0, (float) $loan->pembayaran()->sum('nominal'));
+        $this->assertSame('lunas', $loan->fresh()->status);
+        $this->assertSame(0, $loan->angsuran()->where('status', '!=', 'dibayar')->count());
+        $this->assertSame(3, $loan->pembayaran()->where('status', 'tercatat')->count());
+
+        $this->actingAs($member->user)->get('/anggota/pinjaman/'.$loan->id)
+            ->assertOk()
+            ->assertSee('Riwayat pembayaran')
+            ->assertSee('BYR-');
+    }
+
+    public function test_payment_cannot_be_recorded_for_a_future_installment_or_by_a_member(): void
+    {
+        [$staff, $member] = $this->prepareLoan();
+        $this->actingAs($staff)->post('/petugas/pinjaman', $this->loanData($member));
+        $loan = Pinjaman::firstOrFail();
+        $installment = $loan->angsuran()->firstOrFail();
+
+        $this->post('/petugas/pinjaman/'.$loan->id.'/pembayaran', [
+            'angsuran_id' => $installment->id,
+            'tanggal_pembayaran' => today()->toDateString(),
+            'metode' => 'tunai',
+        ])->assertSessionHasErrors('angsuran_id');
+        $this->assertDatabaseCount('pembayarans', 0);
+        $this->assertDatabaseCount('alokasi_pembayarans', 0);
+
+        $this->actingAs($member->user)->post('/petugas/pinjaman/'.$loan->id.'/pembayaran', [
+            'angsuran_id' => $installment->id,
+            'tanggal_pembayaran' => today()->toDateString(),
+            'metode' => 'tunai',
+        ])->assertForbidden();
+    }
+
     private function prepareLoan(): array
     {
         $staff = $this->createUser('petugas', 'petugas@example.test');

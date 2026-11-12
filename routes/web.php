@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SavingTypeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Staff\LoanController;
+use App\Http\Controllers\Staff\InstallmentPaymentController;
 use App\Http\Controllers\Staff\MemberController;
 use App\Http\Controllers\Staff\SavingsTransactionController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,10 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->name('pinjaman.show');
         Route::get('/pinjaman/create', [LoanController::class, 'create'])
             ->name('pinjaman.create');
+        Route::get('/pinjaman/{loan}/pembayaran/create', [InstallmentPaymentController::class, 'create'])
+            ->name('pinjaman.pembayaran.create');
+        Route::post('/pinjaman/{loan}/pembayaran', [InstallmentPaymentController::class, 'store'])
+            ->name('pinjaman.pembayaran.store');
         Route::post('/pinjaman', [LoanController::class, 'store'])
             ->name('pinjaman.store');
         Route::get('/simpanan', [SavingsTransactionController::class, 'staffIndex'])

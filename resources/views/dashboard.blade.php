@@ -433,7 +433,15 @@
                                 <span class="shortcut-icon shortcut-blue">PH</span>
                                 <span>
                                     <strong>Daftar pinjaman</strong>
-                                    <small>Catatan pencairan dan tenor</small>
+                                    <small>Detail dan jadwal angsuran</small>
+                                </span>
+                                <b>›</b>
+                            </a>
+                            <a href="{{ route('petugas.pinjaman.index') }}">
+                                <span class="shortcut-icon shortcut-green">BY</span>
+                                <span>
+                                    <strong>Pembayaran angsuran</strong>
+                                    <small>Pilih pinjaman untuk menerima pembayaran</small>
                                 </span>
                                 <b>›</b>
                             </a>
@@ -618,7 +626,8 @@
                                     @foreach ($data['recentLoans'] as $loan)
                                         <a
                                             href="{{ route('anggota.pinjaman.show', $loan) }}"
-                                            class="d-flex justify-content-between gap-2 small mb-2 text-decoration-none"
+                                            class="d-flex justify-content-between gap-2 small mb-2
+                                                text-decoration-none"
                                         >
                                             <span class="text-truncate">{{ $loan->nomor_pinjaman }}</span>
                                             <span class="text-nowrap">

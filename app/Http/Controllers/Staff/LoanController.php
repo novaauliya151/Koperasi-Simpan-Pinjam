@@ -8,6 +8,7 @@ use App\Models\KetentuanPinjaman;
 use App\Models\LogAktivitas;
 use App\Models\Pinjaman;
 use App\Services\LoanScheduleService;
+use App\Services\InstallmentPaymentService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,8 +21,10 @@ use Illuminate\View\View;
 
 class LoanController extends Controller
 {
-    public function __construct(private readonly LoanScheduleService $scheduleService)
-    {
+    public function __construct(
+        private readonly LoanScheduleService $scheduleService,
+        private readonly InstallmentPaymentService $paymentService,
+    ) {
     }
 
     public function staffIndex(): View
@@ -193,10 +196,12 @@ class LoanController extends Controller
     private function loanDetail(Pinjaman $loan, bool $staffView): View
     {
         $this->scheduleService->ensure($loan);
+        $this->paymentService->refreshLoanState($loan);
         $loan->load([
             'anggota:id,nomor_anggota,nama',
             'ketentuan',
             'angsuran.alokasi.pembayaran:id,status',
+            'pembayaran.alokasi.angsuran',
         ]);
 
         $principalPaidCents = 0;
@@ -246,8 +251,20 @@ class LoanController extends Controller
                     + $this->toCents($item['record']->jasa_tagihan)),
             ),
         ];
+        $payments = $loan->pembayaran->sortByDesc('tanggal_pembayaran');
+        $hasDueInstallments = $installments->contains(
+            fn (array $item): bool => (float) $item['outstanding'] > 0
+                && $item['record']->jatuh_tempo->lte(today()),
+        );
 
-        return view('loans.show', compact('loan', 'staffView', 'installments', 'summary'));
+        return view('loans.show', compact(
+            'loan',
+            'staffView',
+            'installments',
+            'summary',
+            'payments',
+            'hasDueInstallments',
+        ));
     }
 
     private function toCents(string|int|float $amount): int
