@@ -14,7 +14,7 @@ class TransaksiSimpanan extends Model
         'periode', 'nominal', 'metode', 'status', 'dibuat_oleh',
         'pembalikan_dari_id', 'alasan_koreksi', 'jenis_simpanan_kode_snapshot',
         'jenis_simpanan_nama_snapshot', 'nominal_ketentuan_snapshot',
-        'ketentuan_simpanan_id',
+        'ketentuan_simpanan_id', 'idempotency_key', 'keterangan',
     ];
 
     protected function casts(): array

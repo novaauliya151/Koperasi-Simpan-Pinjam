@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\SavingTypeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Staff\MemberController;
+use App\Http\Controllers\Staff\SavingsTransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function (): void {
@@ -45,6 +46,12 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 
     Route::middleware('role:petugas')->prefix('petugas')->name('petugas.')->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
+        Route::get('/simpanan', [SavingsTransactionController::class, 'staffIndex'])
+            ->name('simpanan.index');
+        Route::get('/simpanan/create', [SavingsTransactionController::class, 'create'])
+            ->name('simpanan.create');
+        Route::post('/simpanan', [SavingsTransactionController::class, 'store'])
+            ->name('simpanan.store');
         Route::patch('/anggota/{anggota}/status', [MemberController::class, 'updateStatus'])
             ->name('anggota.status');
         Route::resource('anggota', MemberController::class)
@@ -54,6 +61,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 
     Route::middleware('role:anggota')->prefix('anggota')->name('anggota.')->group(function (): void {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
+        Route::get('/simpanan', [SavingsTransactionController::class, 'memberIndex'])
+            ->name('simpanan.index');
     });
 });
 

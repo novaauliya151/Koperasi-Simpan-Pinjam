@@ -99,7 +99,8 @@
                             @elseif (auth()->user()->role === 'petugas')
                                 <div class="sidebar-section-label mt-4">DATABASE</div>
                                 <a
-                                    class="nav-link {{ request()->routeIs('petugas.anggota.*') ? 'active' : '' }}"
+                                    class="nav-link
+                                        {{ request()->routeIs('petugas.anggota.*') ? 'active' : '' }}"
                                     href="{{ route('petugas.anggota.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -109,6 +110,30 @@
                                         <path d="M18 14a5 5 0 0 1 3.5 4.8" />
                                     </svg>
                                     Data anggota
+                                </a>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('petugas.simpanan.*') ? 'active' : '' }}"
+                                    href="{{ route('petugas.simpanan.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 6h18M5 6v14h14V6M8 10h8M8 14h5" />
+                                        <path d="M9 3h6v3H9z" />
+                                    </svg>
+                                    Setoran simpanan
+                                </a>
+                            @elseif (auth()->user()->role === 'anggota')
+                                <div class="sidebar-section-label mt-4">SIMPANAN</div>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('anggota.simpanan.*') ? 'active' : '' }}"
+                                    href="{{ route('anggota.simpanan.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 6h18M5 6v14h14V6M8 10h8M8 14h5" />
+                                        <path d="M9 3h6v3H9z" />
+                                    </svg>
+                                    Simpanan saya
                                 </a>
                             @endif
                         </nav>
