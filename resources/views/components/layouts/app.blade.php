@@ -25,7 +25,7 @@
                         <a href="#pengaturan" class="hover:text-blue-700">Pengaturan</a>
                         <a href="#laporan" class="hover:text-blue-700">Laporan</a>
                     @elseif (auth()->user()->role === 'petugas')
-                        <a href="#anggota" class="hover:text-blue-700">Anggota</a>
+                        <a href="{{ route('petugas.anggota.index') }}" class="hover:text-blue-700">Anggota</a>
                         <a href="#simpanan" class="hover:text-blue-700">Simpanan</a>
                         <a href="#pinjaman" class="hover:text-blue-700">Pinjaman</a>
                         <a href="#laporan" class="hover:text-blue-700">Laporan</a>
