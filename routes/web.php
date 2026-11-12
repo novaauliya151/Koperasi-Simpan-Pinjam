@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\AccountController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\SavingTypeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Staff\MemberController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +25,21 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->parameters(['akun' => 'user'])
             ->only(['index', 'create', 'store', 'edit', 'update'])
             ->names('accounts');
+
+        Route::get('/jenis-simpanan', [SavingTypeController::class, 'index'])
+            ->name('saving-types.index');
+        Route::get('/jenis-simpanan/create', [SavingTypeController::class, 'create'])
+            ->name('saving-types.create');
+        Route::post('/jenis-simpanan', [SavingTypeController::class, 'store'])
+            ->name('saving-types.store');
+        Route::get('/jenis-simpanan/{savingType}/edit', [SavingTypeController::class, 'edit'])
+            ->name('saving-types.edit');
+        Route::put('/jenis-simpanan/{savingType}', [SavingTypeController::class, 'update'])
+            ->name('saving-types.update');
+        Route::patch('/jenis-simpanan/{savingType}/status', [SavingTypeController::class, 'updateStatus'])
+            ->name('saving-types.status');
+        Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])
+            ->name('activity-logs.index');
     });
 
     Route::middleware('role:petugas')->prefix('petugas')->name('petugas.')->group(function (): void {
@@ -40,3 +57,4 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 });
 
 Route::redirect('/', '/dashboard');
+

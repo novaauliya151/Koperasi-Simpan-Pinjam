@@ -22,8 +22,12 @@
                         <a href="{{ route('admin.accounts.index') }}" class="hover:text-blue-700">
                             Akun
                         </a>
-                        <a href="#pengaturan" class="hover:text-blue-700">Pengaturan</a>
-                        <a href="#laporan" class="hover:text-blue-700">Laporan</a>
+                        <a href="{{ route('admin.saving-types.index') }}" class="hover:text-blue-700">
+                            Pengaturan
+                        </a>
+                        <a href="{{ route('admin.activity-logs.index') }}" class="hover:text-blue-700">
+                            Log aktivitas
+                        </a>
                     @elseif (auth()->user()->role === 'petugas')
                         <a href="{{ route('petugas.anggota.index') }}" class="hover:text-blue-700">Anggota</a>
                         <a href="#simpanan" class="hover:text-blue-700">Simpanan</a>
@@ -55,3 +59,6 @@
     </main>
 </body>
 </html>
+
+
+
