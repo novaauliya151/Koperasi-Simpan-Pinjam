@@ -9,22 +9,19 @@
 <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
     <header class="border-b border-slate-200 bg-white">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-            <a
-                class="text-lg font-semibold text-slate-900"
-                href="{{ url('/') }}"
-            >
+            <a class="text-lg font-semibold text-slate-900" href="{{ url('/') }}">
                 Koperasi
             </a>
             <nav
                 class="flex flex-wrap gap-4 text-sm text-slate-600"
                 aria-label="Navigasi utama"
             >
-                <a href="{{ url('/') }}" class="hover:text-blue-700">
-                    Ringkasan
-                </a>
+                <a href="{{ url('/') }}" class="hover:text-blue-700">Ringkasan</a>
                 @auth
                     @if (auth()->user()->role === 'admin')
-                        <a href="#akun" class="hover:text-blue-700">Akun</a>
+                        <a href="{{ route('admin.accounts.index') }}" class="hover:text-blue-700">
+                            Akun
+                        </a>
                         <a href="#pengaturan" class="hover:text-blue-700">Pengaturan</a>
                         <a href="#laporan" class="hover:text-blue-700">Laporan</a>
                     @elseif (auth()->user()->role === 'petugas')
@@ -39,8 +36,10 @@
                         <a href="#pinjaman-saya" class="hover:text-blue-700">
                             Pinjaman saya
                         </a>
-                        <a href="#profil" class="hover:text-blue-700">Profil</a>
                     @endif
+                    <a href="{{ route('profile.edit') }}" class="hover:text-blue-700">
+                        Profil
+                    </a>
                 @endauth
             </nav>
         </div>
