@@ -15,6 +15,42 @@
             </div>
         </div>
 
+        @if ($user->role === 'petugas')
+            <form
+                method="GET"
+                action="{{ route('petugas.dashboard') }}"
+                class="card card-body p-3 mb-3"
+            >
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-sm-auto">
+                        <label for="periode" class="form-label mb-1">Periode ringkasan</label>
+                        <input
+                            id="periode"
+                            name="periode"
+                            type="month"
+                            value="{{ $data['selectedPeriod'] }}"
+                            class="form-control {{ $data['periodError'] ? 'is-invalid' : '' }}"
+                            required
+                        >
+                        @if ($data['periodError'])
+                            <div class="small text-danger mt-1">
+                                {{ $data['periodError'] }}
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-12 col-sm-auto">
+                        <button type="submit" class="btn btn-primary">Terapkan</button>
+                        <a
+                            href="{{ route('petugas.dashboard') }}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Bulan ini
+                        </a>
+                    </div>
+                </div>
+            </form>
+        @endif
+
         @if ($user->role === 'admin')
             <div class="row g-3 mb-3">
                 <div class="col-12 col-md-6 col-xl-3">
@@ -54,7 +90,7 @@
                                     {{ number_format($data['activeLoans']) }}
                                 </strong>
                                 <span class="stat-note">
-                                    Pokok pinjaman: Rp {{ number_format(
+                                    Sisa pokok: Rp {{ number_format(
                                         (float) $data['activeLoanTotal'],
                                         0,
                                         ',',
@@ -81,7 +117,9 @@
                                 <strong class="stat-value">
                                     {{ number_format($data['activeMembers']) }}
                                 </strong>
-                                <span class="stat-note">Keanggotaan terverifikasi</span>
+                                <span class="stat-note">
+                                    dari {{ number_format($data['members']) }} anggota
+                                </span>
                             </div>
                         </div>
                     </article>
@@ -105,9 +143,30 @@
                         </div>
                     </article>
                 </div>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <article class="card stat-card stat-card-cyan h-100">
+                        <div class="card-body p-3">
+                            <span class="stat-icon stat-icon-blue">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="9" cy="8" r="3.5" />
+                                    <path d="M2 20a7 7 0 0 1 14 0M17 8h5m-2.5-2.5v5" />
+                                </svg>
+                            </span>
+                            <div class="stat-copy">
+                                <span class="stat-label">Total akun</span>
+                                <strong class="stat-value">
+                                    {{ number_format($data['accounts']) }}
+                                </strong>
+                                <span class="stat-note">
+                                    {{ number_format($data['activeAccounts']) }} akun aktif
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </div>
 
-            <div class="row g-3 mb-3">
+            <div class="row g-3 mb-3" id="ringkasan-laporan">
                 <div class="col-lg-8">
                     <section class="card dashboard-card">
                         <div class="card-header">
@@ -215,6 +274,22 @@
                                 <span><strong>Ketentuan pinjaman</strong><small>Tarif dan pilihan tenor</small></span>
                                 <b>›</b>
                             </a>
+                            <a href="{{ route('admin.reports.index') }}">
+                                <span class="shortcut-icon shortcut-green">LP</span>
+                                <span>
+                                    <strong>Laporan koperasi</strong>
+                                    <small>Anggota, simpanan, pinjaman, dan angsuran</small>
+                                </span>
+                                <b>›</b>
+                            </a>
+                            <a href="{{ route('admin.dashboard') }}#ringkasan-laporan">
+                                <span class="shortcut-icon shortcut-blue">GR</span>
+                                <span>
+                                    <strong>Ringkasan grafik</strong>
+                                    <small>Tren simpanan dan aktivitas sistem</small>
+                                </span>
+                                <b>›</b>
+                            </a>
                             <a href="{{ route('admin.activity-logs.index') }}">
                                 <span class="shortcut-icon shortcut-green">LG</span>
                                 <span><strong>Log aktivitas</strong><small>Jejak perubahan sistem</small></span>
@@ -294,32 +369,16 @@
                                 </svg>
                             </span>
                             <div class="stat-copy">
-                                <span class="stat-label">Total simpanan tercatat</span>
+                                <span class="stat-label">
+                                    Setoran sah · {{ $data['periodLabel'] }}
+                                </span>
                                 <strong class="stat-value">
                                     Rp {{ number_format((float) $data['savingsTotal'], 0, ',', '.') }}
                                 </strong>
                                 <span class="stat-note">
-                                    {{ number_format($data['savingsTransactions']) }} setoran sah
+                                    {{ number_format($data['savingsTransactions']) }} setoran ·
+                                    {{ number_format($data['reversedSavings']) }} koreksi
                                 </span>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div class="col-12 col-md-6 col-xl-4">
-                    <article class="card stat-card stat-card-rose h-100">
-                        <div class="card-body p-3">
-                            <span class="stat-icon">
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <circle cx="12" cy="12" r="9" />
-                                    <path d="m9 9 6 6m0-6-6 6" />
-                                </svg>
-                            </span>
-                            <div class="stat-copy">
-                                <span class="stat-label">Setoran dibatalkan</span>
-                                <strong class="stat-value">
-                                    {{ number_format($data['cancelledSavings']) }}
-                                </strong>
-                                <span class="stat-note">Tetap tersimpan untuk audit</span>
                             </div>
                         </div>
                     </article>
@@ -337,7 +396,36 @@
                                 <span class="stat-label">Pinjaman aktif</span>
                                 <strong class="stat-value">{{ number_format($data['activeLoans']) }}</strong>
                                 <span class="stat-note">
-                                    Pokok: Rp {{ number_format((float) $data['activeLoanTotal'], 0, ',', '.') }}
+                                    Sisa pokok: Rp {{ number_format(
+                                        (float) $data['activeLoanTotal'],
+                                        0,
+                                        ',',
+                                        '.',
+                                    ) }}
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="col-12 col-md-6 col-xl-4">
+                    <article class="card stat-card stat-card-cyan h-100">
+                        <div class="card-body p-3">
+                            <span class="stat-icon stat-icon-blue">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M3 5h18v14H3zM7 9h10M7 13h6" />
+                                    <circle cx="18" cy="16" r="3" />
+                                </svg>
+                            </span>
+                            <div class="stat-copy">
+                                <span class="stat-label">
+                                    Pembayaran sah · {{ $data['periodLabel'] }}
+                                </span>
+                                <strong class="stat-value">
+                                    Rp {{ number_format((float) $data['paymentTotal'], 0, ',', '.') }}
+                                </strong>
+                                <span class="stat-note">
+                                    {{ number_format($data['paymentCount']) }} pembayaran ·
+                                    {{ number_format($data['paymentReversals']) }} koreksi
                                 </span>
                             </div>
                         </div>
@@ -449,6 +537,77 @@
                     </section>
                 </div>
             </div>
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <section class="card dashboard-card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Pembayaran pada {{ $data['periodLabel'] }}</h2>
+                                <p>Transaksi sah dan koreksi pada periode terpilih</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table dashboard-table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Anggota</th>
+                                        <th>Nomor pinjaman</th>
+                                        <th>Nomor pembayaran</th>
+                                        <th class="text-end">Nominal</th>
+                                        <th>Status</th>
+                                        <th><span class="visually-hidden">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($data['recentPayments'] as $payment)
+                                        <tr>
+                                            <td>
+                                                {{ $payment->tanggal_pembayaran->format('d/m/Y') }}
+                                            </td>
+                                            <td>
+                                                {{ $payment->pinjaman?->anggota?->nama ?? '—' }}
+                                            </td>
+                                            <td>{{ $payment->pinjaman?->nomor_pinjaman ?? '—' }}</td>
+                                            <td>{{ $payment->nomor_pembayaran }}</td>
+                                            <td class="text-end text-nowrap">
+                                                Rp {{ number_format(
+                                                    (float) $payment->nominal,
+                                                    0,
+                                                    ',',
+                                                    '.',
+                                                ) }}
+                                            </td>
+                                            <td>
+                                                <span class="status-pill">
+                                                    {{ ucfirst($payment->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a
+                                                    href="{{ route(
+                                                        'petugas.pembayaran.receipt',
+                                                        $payment,
+                                                    ) }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Bukti
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="empty-table">
+                                                Belum ada pembayaran pada periode ini.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
         @else
             <div class="row g-3 mb-3">
                 <div class="col-12 col-md-6 col-xl-4">
@@ -485,8 +644,16 @@
                                 <span class="stat-label">Pinjaman aktif</span>
                                 <strong class="stat-value">{{ number_format($data['activeLoans']) }}</strong>
                                 <span class="stat-note">
-                                    Pokok Rp {{ number_format(
+                                    Sisa pokok Rp {{ number_format(
                                         (float) $data['activeLoanTotal'],
+                                        0,
+                                        ',',
+                                        '.',
+                                    ) }}
+                                </span>
+                                <span class="stat-note mt-1">
+                                    Sisa kewajiban Rp {{ number_format(
+                                        (float) $data['activeLoanObligations'],
                                         0,
                                         ',',
                                         '.',
@@ -518,6 +685,92 @@
                             </div>
                         </div>
                     </article>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-lg-4">
+                    <section class="card dashboard-card h-100">
+                        <div class="card-header">
+                            <div>
+                                <h2>Saldo per jenis simpanan</h2>
+                                <p>Hanya transaksi yang tercatat</p>
+                            </div>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            @forelse ($data['savingsBalances'] as $balance)
+                                <div class="list-group-item d-flex justify-content-between gap-3">
+                                    <span class="text-truncate">
+                                        {{ $balance->jenis_simpanan_nama_snapshot
+                                            ?? $balance->jenis?->nama
+                                            ?? 'Simpanan' }}
+                                    </span>
+                                    <strong class="text-nowrap">
+                                        Rp {{ number_format((float) $balance->saldo, 0, ',', '.') }}
+                                    </strong>
+                                </div>
+                            @empty
+                                <div class="empty-state p-4">
+                                    Belum ada saldo simpanan yang tercatat.
+                                </div>
+                            @endforelse
+                        </div>
+                    </section>
+                </div>
+                <div class="col-12 col-lg-8">
+                    <section class="card dashboard-card h-100">
+                        <div class="card-header">
+                            <div>
+                                <h2>Jadwal angsuran</h2>
+                                <p>Tagihan yang belum lunas, termasuk yang terlambat</p>
+                            </div>
+                            <a href="{{ route('anggota.pinjaman.index') }}">Lihat pinjaman</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table dashboard-table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Jatuh tempo</th>
+                                        <th>Pinjaman</th>
+                                        <th class="text-end">Sisa tagihan</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($data['upcomingInstallments'] as $item)
+                                        <tr>
+                                            <td>
+                                                {{ $item['installment']->jatuh_tempo->format('d/m/Y') }}
+                                            </td>
+                                            <td>
+                                                <a href="{{ route(
+                                                    'anggota.pinjaman.show',
+                                                    $item['loan'],
+                                                ) }}">
+                                                    {{ $item['loan']->nomor_pinjaman }}
+                                                </a>
+                                            </td>
+                                            <td class="text-end text-nowrap">
+                                                Rp {{ number_format(
+                                                    (float) $item['outstanding'],
+                                                    0,
+                                                    ',',
+                                                    '.',
+                                                ) }}
+                                            </td>
+                                            <td>{{ $item['status'] }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="empty-table">
+                                                Tidak ada tagihan angsuran yang belum lunas.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
                 </div>
             </div>
 
@@ -620,23 +873,107 @@
                                     Pinjaman saya
                                 </a>
                             </div>
-                            @if ($data['recentLoans']->isNotEmpty())
-                                <div class="border-top mt-3 pt-3">
-                                    <div class="small text-secondary mb-2">Pinjaman terbaru</div>
-                                    @foreach ($data['recentLoans'] as $loan)
+                            <div class="border-top mt-3 pt-3">
+                                <div class="small text-secondary mb-2">Pinjaman terbaru</div>
+                                @forelse ($data['recentLoans'] as $loan)
+                                    <div class="small mb-2">
                                         <a
                                             href="{{ route('anggota.pinjaman.show', $loan) }}"
-                                            class="d-flex justify-content-between gap-2 small mb-2
+                                            class="d-flex justify-content-between gap-2
                                                 text-decoration-none"
                                         >
                                             <span class="text-truncate">{{ $loan->nomor_pinjaman }}</span>
                                             <span class="text-nowrap">
-                                                Rp {{ number_format((float) $loan->pokok, 0, ',', '.') }}
+                                                Rp {{ number_format(
+                                                    (float) $loan->principal_remaining_dashboard,
+                                                    0,
+                                                    ',',
+                                                    '.',
+                                                ) }}
                                             </span>
                                         </a>
-                                    @endforeach
-                                </div>
-                            @endif
+                                        <span class="text-secondary">
+                                            Sisa kewajiban Rp {{ number_format(
+                                                (float) $loan->unpaid_total_dashboard,
+                                                0,
+                                                ',',
+                                                '.',
+                                            ) }}
+                                        </span>
+                                    </div>
+                                @empty
+                                    <p class="small text-secondary mb-0">Belum ada pinjaman.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <section class="card dashboard-card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Riwayat pembayaran pinjaman</h2>
+                                <p>Lima pembayaran dan koreksi terakhir milik Anda</p>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table dashboard-table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Nomor pinjaman</th>
+                                        <th>Nomor pembayaran</th>
+                                        <th class="text-end">Nominal</th>
+                                        <th>Status</th>
+                                        <th><span class="visually-hidden">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($data['recentPayments'] as $payment)
+                                        <tr>
+                                            <td>
+                                                {{ $payment->tanggal_pembayaran->format('d/m/Y') }}
+                                            </td>
+                                            <td>
+                                                {{ $payment->pinjaman?->nomor_pinjaman ?? '—' }}
+                                            </td>
+                                            <td>{{ $payment->nomor_pembayaran }}</td>
+                                            <td class="text-end text-nowrap">
+                                                Rp {{ number_format(
+                                                    (float) $payment->nominal,
+                                                    0,
+                                                    ',',
+                                                    '.',
+                                                ) }}
+                                            </td>
+                                            <td>
+                                                <span class="status-pill">
+                                                    {{ ucfirst($payment->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a
+                                                    href="{{ route(
+                                                        'anggota.pembayaran.receipt',
+                                                        $payment,
+                                                    ) }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                >
+                                                    Bukti
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="empty-table">
+                                                Belum ada pembayaran pinjaman.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </section>
                 </div>

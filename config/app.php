@@ -15,6 +15,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'demo_seed_passwords' => [
+        'admin' => env('KOPERASI_DEMO_ADMIN_PASSWORD'),
+        'petugas' => env('KOPERASI_DEMO_STAFF_PASSWORD'),
+        'anggota' => env('KOPERASI_DEMO_MEMBER_PASSWORD'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

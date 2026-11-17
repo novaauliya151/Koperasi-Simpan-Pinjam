@@ -4,9 +4,11 @@ use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\LoanTermsController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SavingTypeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LoanPaymentReceiptController;
 use App\Http\Controllers\Staff\LoanController;
 use App\Http\Controllers\Staff\InstallmentPaymentController;
 use App\Http\Controllers\Staff\MemberController;
@@ -45,6 +47,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->name('saving-types.status');
         Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])
             ->name('activity-logs.index');
+        Route::get('/laporan', [ReportController::class, 'index'])
+            ->name('reports.index');
         Route::get('/ketentuan-pinjaman', [LoanTermsController::class, 'index'])
             ->name('loan-terms.index');
         Route::post('/ketentuan-pinjaman', [LoanTermsController::class, 'store'])
@@ -63,6 +67,10 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->name('pinjaman.pembayaran.create');
         Route::post('/pinjaman/{loan}/pembayaran', [InstallmentPaymentController::class, 'store'])
             ->name('pinjaman.pembayaran.store');
+        Route::post('/pinjaman/pembayaran/{payment}/pembatalan', [InstallmentPaymentController::class, 'cancel'])
+            ->name('pinjaman.pembayaran.cancel');
+        Route::get('/pembayaran/{payment}/bukti', [LoanPaymentReceiptController::class, 'staffReceipt'])
+            ->name('pembayaran.receipt');
         Route::post('/pinjaman', [LoanController::class, 'store'])
             ->name('pinjaman.store');
         Route::get('/simpanan', [SavingsTransactionController::class, 'staffIndex'])
@@ -88,6 +96,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->name('pinjaman.index');
         Route::get('/pinjaman/{loan}', [LoanController::class, 'memberShow'])
             ->name('pinjaman.show');
+        Route::get('/pembayaran/{payment}/bukti', [LoanPaymentReceiptController::class, 'memberReceipt'])
+            ->name('pembayaran.receipt');
         Route::get('/simpanan', [SavingsTransactionController::class, 'memberIndex'])
             ->name('simpanan.index');
         Route::get('/simpanan/{transaction}/bukti', [SavingsTransactionController::class, 'receipt'])

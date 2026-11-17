@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Pembayaran extends Model
 {
@@ -39,5 +40,15 @@ class Pembayaran extends Model
     public function alokasi(): HasMany
     {
         return $this->hasMany(AlokasiPembayaran::class, 'pembayaran_id');
+    }
+
+    public function pembalikan(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'pembalikan_dari_id');
+    }
+
+    public function pembatalan(): HasOne
+    {
+        return $this->hasOne(self::class, 'pembalikan_dari_id');
     }
 }

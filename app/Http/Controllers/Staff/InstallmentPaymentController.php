@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\AlokasiPembayaran;
+use App\Models\Pembayaran;
 use App\Models\Pinjaman;
 use App\Services\InstallmentPaymentService;
 use App\Services\LoanScheduleService;
+use App\Services\PaymentReversalService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -16,6 +18,7 @@ class InstallmentPaymentController extends Controller
     public function __construct(
         private readonly InstallmentPaymentService $paymentService,
         private readonly LoanScheduleService $scheduleService,
+        private readonly PaymentReversalService $reversalService,
     ) {
     }
 
@@ -80,6 +83,22 @@ class InstallmentPaymentController extends Controller
 
         return redirect()->route('petugas.pinjaman.show', $loan)
             ->with('status', 'Pembayaran angsuran berhasil dicatat.');
+    }
+
+    public function cancel(Request $request, Pembayaran $payment): RedirectResponse
+    {
+        $data = $request->validate([
+            'alasan_koreksi' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $this->reversalService->reverse(
+            $payment,
+            $data['alasan_koreksi'],
+            (int) $request->user()->id,
+        );
+
+        return redirect()->route('petugas.pinjaman.show', $payment->pinjaman_id)
+            ->with('status', 'Pembayaran dibatalkan melalui pembalikan yang tercatat.');
     }
 
     private function toCents(string|int|float $amount): int

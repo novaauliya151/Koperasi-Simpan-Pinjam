@@ -18,7 +18,12 @@
         <div class="app-shell">
             <aside
                 class="sidebar offcanvas-lg offcanvas-start d-flex flex-column
-                    {{ request()->routeIs('petugas.simpanan.receipt', 'anggota.simpanan.receipt')
+                    {{ request()->routeIs(
+                        'petugas.simpanan.receipt',
+                        'anggota.simpanan.receipt',
+                        'petugas.pembayaran.receipt',
+                        'anggota.pembayaran.receipt',
+                    )
                         ? 'd-print-none'
                         : '' }}"
                 tabindex="-1"
@@ -97,6 +102,16 @@
                                         <path d="M7 10h10M7 14h5" />
                                     </svg>
                                     Ketentuan pinjaman
+                                </a>
+                                <a
+                                    class="nav-link
+                                        {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+                                    href="{{ route('admin.reports.index') }}"
+                                >
+                                    <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5" />
+                                    </svg>
+                                    Laporan
                                 </a>
                                 <div class="sidebar-section-label mt-4">AKTIVITAS</div>
                                 <a
@@ -209,7 +224,12 @@
 
             <main class="app-main">
                 <header class="topbar
-                    {{ request()->routeIs('petugas.simpanan.receipt', 'anggota.simpanan.receipt')
+                    {{ request()->routeIs(
+                        'petugas.simpanan.receipt',
+                        'anggota.simpanan.receipt',
+                        'petugas.pembayaran.receipt',
+                        'anggota.pembayaran.receipt',
+                    )
                         ? 'd-print-none'
                         : '' }}">
                     <button

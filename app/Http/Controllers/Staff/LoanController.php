@@ -202,6 +202,8 @@ class LoanController extends Controller
             'ketentuan',
             'angsuran.alokasi.pembayaran:id,status',
             'pembayaran.alokasi.angsuran',
+            'pembayaran.pembalikan.alokasi.angsuran',
+            'pembayaran.pembatalan',
         ]);
 
         $principalPaidCents = 0;

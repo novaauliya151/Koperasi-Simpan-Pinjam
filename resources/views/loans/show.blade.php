@@ -32,6 +32,10 @@
             </div>
         </div>
 
+        @error('pembayaran')
+            <div class="alert alert-danger" role="alert">{{ $message }}</div>
+        @enderror
+
         <div class="row g-3 mb-3">
             <div class="col-12 col-md-6 col-xl-3">
                 <div class="card h-100"><div class="card-body">
@@ -216,14 +220,17 @@
                             <th>Tanggal</th><th>Nomor pembayaran</th><th>Angsuran</th>
                             <th>Metode</th><th class="text-end">Pokok</th>
                             <th class="text-end">Jasa</th><th class="text-end">Total</th>
-                            <th>Status</th>
+                            <th>Status</th><th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($payments as $payment)
                             @php
-                                $principalAllocation = $payment->alokasi->sum('alokasi_pokok');
-                                $interestAllocation = $payment->alokasi->sum('alokasi_jasa');
+                                $allocationSource = $payment->pembalikan ?? $payment;
+                                $principalAllocation = $allocationSource->alokasi
+                                    ->sum('alokasi_pokok');
+                                $interestAllocation = $allocationSource->alokasi
+                                    ->sum('alokasi_jasa');
                             @endphp
                             <tr>
                                 <td>{{ $payment->tanggal_pembayaran->format('d/m/Y') }}</td>
@@ -254,10 +261,67 @@
                                         {{ ucfirst($payment->status) }}
                                     </span>
                                 </td>
+                                <td>
+                                    <div class="d-flex flex-column align-items-start gap-2">
+                                        <a
+                                            href="{{ $staffView
+                                                ? route('petugas.pembayaran.receipt', $payment)
+                                                : route('anggota.pembayaran.receipt', $payment) }}"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
+                                            Bukti
+                                        </a>
+                                        @if (
+                                            $staffView
+                                            && $payment->status === 'tercatat'
+                                            && $payment->pembalikan_dari_id === null
+                                            && ! $payment->pembatalan
+                                        )
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'petugas.pinjaman.pembayaran.cancel',
+                                                    $payment,
+                                                ) }}"
+                                                onsubmit="return confirm('Batalkan pembayaran ini?');"
+                                                class="d-flex flex-column gap-1"
+                                            >
+                                                @csrf
+                                                <label
+                                                    for="alasan_koreksi_{{ $payment->id }}"
+                                                    class="form-label small mb-0"
+                                                >
+                                                    Alasan koreksi
+                                                </label>
+                                                <div class="form-text">
+                                                    Koreksi ini membatalkan pembayaran saja;
+                                                    catatan pinjaman tetap tersimpan.
+                                                </div>
+                                                <textarea
+                                                    id="alasan_koreksi_{{ $payment->id }}"
+                                                    name="alasan_koreksi"
+                                                    class="form-control form-control-sm"
+                                                    rows="2"
+                                                    maxlength="2000"
+                                                    required
+                                                >{{ old('alasan_koreksi') }}</textarea>
+                                                @error('alasan_koreksi')
+                                                    <div class="small text-danger">{{ $message }}</div>
+                                                @enderror
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                >
+                                                    Batalkan pembayaran
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-4 text-center text-secondary">
+                                <td colspan="9" class="py-4 text-center text-secondary">
                                     Belum ada pembayaran yang dicatat.
                                 </td>
                             </tr>

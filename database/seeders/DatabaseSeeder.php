@@ -12,19 +12,63 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $passwords = config('app.demo_seed_passwords');
+        $requiredRoles = ['admin', 'petugas', 'anggota'];
+        $hasConfiguredValues = is_array($passwords)
+            && collect($requiredRoles)->every(
+                fn (string $role): bool => isset($passwords[$role])
+                    && is_string($passwords[$role])
+                    && $passwords[$role] !== '',
+            );
+        $isLocalDemoEnvironment = app()->environment(['local', 'testing']);
+        $hasConfiguredPasswords = $hasConfiguredValues
+            && ($isLocalDemoEnvironment || (
+                collect($requiredRoles)->every(
+                    fn (string $role): bool => mb_strlen($passwords[$role]) >= 16,
+                )
+                && count(array_unique(array_values(array_intersect_key(
+                    $passwords,
+                    array_flip($requiredRoles),
+                )))) === count($requiredRoles)
+            ));
+
+        if (! $hasConfiguredPasswords) {
+            $this->command?->warn(
+                'Demo accounts were skipped. Set three KOPERASI_DEMO_*_PASSWORD values. '
+                    .'Production passwords must be distinct and at least 16 characters.',
+            );
+
+            return;
+        }
+
         $admin = User::updateOrCreate(
-            ['email' => 'admin@koperasi.test'],
-            ['name' => 'Admin Demo', 'password' => 'password', 'role' => 'admin', 'is_active' => true],
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin Demo',
+                'password' => $passwords['admin'],
+                'role' => 'admin',
+                'is_active' => true,
+            ],
         );
 
         User::updateOrCreate(
-            ['email' => 'petugas@koperasi.test'],
-            ['name' => 'Petugas Demo', 'password' => 'password', 'role' => 'petugas', 'is_active' => true],
+            ['email' => 'petugas@gmail.com'],
+            [
+                'name' => 'Petugas Demo',
+                'password' => $passwords['petugas'],
+                'role' => 'petugas',
+                'is_active' => true,
+            ],
         );
 
         $anggotaUser = User::updateOrCreate(
-            ['email' => 'anggota@koperasi.test'],
-            ['name' => 'Anggota Demo', 'password' => 'password', 'role' => 'anggota', 'is_active' => true],
+            ['email' => 'anggota@gmail.com'],
+            [
+                'name' => 'Anggota Demo',
+                'password' => $passwords['anggota'],
+                'role' => 'anggota',
+                'is_active' => true,
+            ],
         );
 
         foreach ([
