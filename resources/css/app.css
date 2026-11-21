@@ -1,7 +1,20 @@
 :root {
-    --coop-accent: #d81b60;
-    --coop-accent-soft: #fcebf2;
-    --coop-border: #dee2e6;
+    --warna-primer: #12345b;
+    --warna-primer-gelap: #0c2340;
+    --warna-aksen: #b88a2c;
+    --warna-aksen-lembut: #f4f0e7;
+    --warna-teks: #203b5d;
+    --warna-teks-redup: #6d7b8d;
+    --warna-garis: #e4e9ef;
+    --coop-accent: var(--warna-aksen);
+    --coop-accent-soft: #f4f0e7;
+    --coop-border: var(--warna-garis);
+    --bs-primary: var(--warna-aksen);
+    --bs-primary-rgb: 184, 138, 44;
+    --bs-primary-text-emphasis: var(--warna-primer);
+    --bs-primary-bg-subtle: #f4f0e7;
+    --bs-link-color: var(--warna-primer);
+    --bs-link-hover-color: var(--warna-primer-gelap);
 }
 
 .app-body {
@@ -83,8 +96,13 @@
     min-height: 0;
     flex: 1 1 auto;
     flex-direction: column;
-    padding: 12px 12px 0;
+    padding: 24px 12px 0;
     overflow: visible;
+}
+
+/* Jarak ini dibuat spesifik agar tidak tertimpa padding bawaan Offcanvas. */
+.sidebar .sidebar-content {
+    padding-top: 28px;
 }
 
 .sidebar-navigation {
@@ -141,21 +159,21 @@
 
 .sidebar-nav .nav-link.active {
     background: var(--coop-accent-soft);
-    color: #9f1647;
+    color: var(--warna-primer);
     font-weight: 600;
     box-shadow: inset 3px 0 var(--coop-accent);
 }
 
 .nav-icon {
     display: block;
-    width: 17px;
-    height: 17px;
-    flex: 0 0 17px;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
     fill: none;
     stroke: currentColor;
     stroke-linecap: round;
     stroke-linejoin: round;
-    stroke-width: 1.7;
+    stroke-width: 1.8;
 }
 
 .sidebar-user {
@@ -655,10 +673,10 @@
     .sidebar {
         position: sticky;
         top: 0;
-        width: 248px !important;
+        width: 232px !important;
         height: 100vh !important;
         height: 100dvh !important;
-        flex: 0 0 248px;
+        flex: 0 0 232px;
     }
 }
 
@@ -681,5 +699,520 @@
 
     .bar-chart {
         height: 180px;
+    }
+}
+
+/* Tampilan dashboard memakai palet navy dan emas yang sama pada semua peran. */
+.sidebar {
+    border-right: 0;
+    background: var(--warna-primer);
+    color: #e5ebf3;
+}
+
+.sidebar-heading {
+    min-height: 140px;
+    align-items: flex-start;
+    padding: 28px 20px;
+    border-color: rgb(255 255 255 / 16%);
+    background: var(--warna-primer);
+}
+
+.sidebar-brand {
+    color: #fff;
+}
+
+.sidebar-heading .btn-close {
+    filter: invert(1);
+    opacity: .85;
+}
+
+.brand-mark {
+    border-color: var(--warna-aksen);
+    background: rgb(255 255 255 / 8%);
+    color: #e0b64f;
+}
+
+.sidebar-brand strong {
+    max-width: 170px;
+    color: #fff;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.25;
+}
+
+.sidebar-brand small {
+    color: #c2cede;
+}
+
+.sidebar-content {
+    padding-right: 14px;
+    padding-left: 14px;
+}
+
+.sidebar .sidebar-content {
+    padding-top: 24px;
+}
+
+.sidebar-section-label {
+    color: #b7c5d8;
+    font-size: 12px;
+    letter-spacing: .04em;
+}
+
+.sidebar-nav {
+    gap: 8px;
+}
+
+.sidebar-nav .nav-link {
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 2px;
+    color: #d9e1ec;
+    font-size: 15px;
+}
+
+.sidebar-nav .nav-link:hover {
+    background: rgb(255 255 255 / 8%);
+    color: #fff;
+}
+
+.sidebar-nav .nav-link.active {
+    background: #294a72;
+    color: #fff;
+    box-shadow: inset 3px 0 #d0a43a;
+}
+
+.sidebar-nav .nav-link.active .nav-icon {
+    color: #f0c65d;
+}
+
+.sidebar-navigation {
+    scrollbar-color: #657c9b transparent;
+}
+
+.sidebar-navigation::-webkit-scrollbar-thumb {
+    background: #657c9b;
+}
+
+.sidebar-user {
+    border-color: rgb(255 255 255 / 16%);
+}
+
+.user-avatar {
+    background: #294a72;
+    color: #fff;
+}
+
+.user-summary strong {
+    color: #fff;
+    font-size: 12px;
+}
+
+.user-summary span,
+.sidebar-logout {
+    color: #c2cede;
+}
+
+.sidebar-logout:hover {
+    color: #f0c65d;
+}
+
+.app-body {
+    background: #f3f5f8;
+}
+
+.topbar {
+    min-height: 80px;
+    padding-right: clamp(20px, 3vw, 44px);
+    padding-left: clamp(20px, 3vw, 44px);
+}
+
+.topbar-breadcrumb {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    align-items: center;
+    gap: 14px;
+    color: #657184;
+    font-size: 15px;
+}
+
+.topbar-breadcrumb strong {
+    color: var(--warna-primer);
+    font-weight: 500;
+}
+
+.breadcrumb-divider {
+    color: #a2adbb;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-left: 22px;
+    border-left: 1px solid var(--warna-garis);
+    color: var(--warna-primer);
+    text-decoration: none;
+}
+
+.topbar-user-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.topbar-user-copy strong {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.topbar-user-copy small {
+    color: #657184;
+    font-size: 12px;
+}
+
+.topbar-user-caret {
+    color: #657184;
+    font-size: 18px;
+}
+
+.topbar-date {
+    padding-left: 18px;
+    color: #657184;
+    font-size: 12px;
+}
+
+.page-content {
+    background: #f3f5f8;
+    padding-top: 34px;
+}
+
+.dashboard-heading h1,
+.dashboard-card .card-header h2 {
+    color: var(--warna-primer);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+}
+
+.dashboard-heading h1 {
+    font-size: clamp(30px, 3vw, 40px);
+    letter-spacing: -.025em;
+}
+
+.dashboard-heading p {
+    margin-top: 8px;
+    color: #657184;
+    font-size: 15px;
+}
+
+.dashboard-page .card,
+.dashboard-page .card-body {
+    border-color: #d9e0e8;
+}
+
+.stat-card,
+.dashboard-card {
+    border-radius: 3px;
+    background: #fff;
+    box-shadow: none;
+}
+
+.stat-card .card-body {
+    min-height: 126px;
+    padding: 20px !important;
+}
+
+.stat-icon {
+    color: var(--warna-aksen);
+}
+
+.stat-value {
+    color: var(--warna-primer);
+    font-size: clamp(21px, 1.8vw, 28px);
+}
+
+.dashboard-card .card-header {
+    min-height: 82px;
+    padding: 20px 24px;
+}
+
+.dashboard-card .card-header h2 {
+    font-size: 23px;
+}
+
+.dashboard-card .card-header p,
+.stat-note,
+.stat-label {
+    color: #657184;
+}
+
+.dashboard-card .card-header > a {
+    color: var(--warna-primer);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.chart-empty {
+    min-height: 240px;
+}
+
+.bar-fill,
+.activity-dot {
+    background: var(--warna-aksen);
+}
+
+.dashboard-table thead th {
+    background: #f0f2f5;
+    color: #566276;
+}
+
+.dashboard-table tbody td {
+    color: #344256;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--warna-aksen);
+    --bs-btn-border-color: var(--warna-aksen);
+    --bs-btn-hover-bg: #9f741d;
+    --bs-btn-hover-border-color: #9f741d;
+    --bs-btn-active-bg: #8d6719;
+    --bs-btn-active-border-color: #8d6719;
+    color: #102a4d;
+    font-weight: 600;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar-heading {
+        min-height: 96px;
+        align-items: center;
+        padding: 18px;
+    }
+
+    .sidebar .sidebar-content {
+        padding-top: 20px;
+    }
+
+    .sidebar-nav {
+        gap: 4px;
+    }
+
+    .sidebar-nav .nav-link {
+        min-height: 44px;
+    }
+
+    .topbar {
+        min-height: 68px;
+    }
+
+    .page-content {
+        padding-top: 24px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .topbar {
+        gap: 10px;
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .topbar-breadcrumb {
+        gap: 7px;
+        font-size: 13px;
+    }
+
+    .topbar-user {
+        gap: 4px;
+        padding-left: 10px;
+    }
+
+    .topbar-user-copy strong {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .topbar-user-copy small,
+    .topbar-user-caret {
+        display: none;
+    }
+
+    .dashboard-card .card-header {
+        padding: 16px;
+    }
+
+    .dashboard-card .card-header h2 {
+        font-size: 20px;
+    }
+}
+
+/* Sidebar mengikuti contoh dashboard: bidang navy penuh dan menu bernomor. */
+.sidebar.offcanvas-lg {
+    --bs-offcanvas-bg: var(--warna-primer);
+    background-color: var(--warna-primer) !important;
+}
+
+.sidebar.offcanvas-lg > .sidebar-content,
+.sidebar.offcanvas-lg .sidebar-navigation,
+.sidebar.offcanvas-lg .sidebar-user {
+    background-color: var(--warna-primer);
+}
+
+.sidebar-heading {
+    padding-left: 24px;
+}
+
+.sidebar-brand {
+    gap: 0;
+}
+
+.sidebar-brand .brand-mark {
+    display: none;
+}
+
+.sidebar-brand strong {
+    max-width: 190px;
+    font-size: 22px;
+}
+
+.sidebar-brand small {
+    font-size: 11px;
+}
+
+.sidebar.offcanvas-lg .sidebar-section-label {
+    color: #c0cde0;
+}
+
+.sidebar.offcanvas-lg .sidebar-nav .nav-link {
+    min-height: 50px;
+    gap: 10px;
+    padding: 10px 12px;
+    color: #e1e8f1;
+    font-size: 15px;
+}
+
+
+.sidebar.offcanvas-lg .sidebar-nav .nav-link:hover,
+.sidebar.offcanvas-lg .sidebar-nav .nav-link:focus-visible {
+    background: #24466f;
+    color: #fff;
+}
+
+.sidebar.offcanvas-lg .sidebar-nav .nav-link.active {
+    background: #294a72;
+    color: #fff;
+}
+
+
+.dashboard-card .card-header {
+    gap: 8px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.dashboard-card .card-header h2 {
+    font-size: 20px;
+}
+
+.dashboard-card .card-header > a {
+    font-size: 13px;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar-heading {
+        padding-left: 18px;
+    }
+
+    .sidebar-brand strong {
+        max-width: 180px;
+        font-size: 20px;
+    }
+
+    .sidebar.offcanvas-lg .sidebar-nav .nav-link {
+        min-height: 48px;
+        font-size: 15px;
+    }
+
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-card .card-header h2 {
+        font-size: 18px;
+    }
+}
+
+
+/* Kembalikan ikon navigasi dan rapikan tinggi header agar lebih seimbang. */
+.sidebar-heading {
+    min-height: 112px;
+    align-items: center;
+    padding: 16px 20px;
+}
+
+.sidebar-brand {
+    gap: 10px;
+}
+
+.sidebar-brand .brand-mark {
+    display: grid;
+}
+
+.sidebar-brand strong {
+    max-width: 160px;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.sidebar-brand small {
+    font-size: 10px;
+}
+
+.sidebar.offcanvas-lg .sidebar-nav .nav-link {
+    min-height: 50px;
+    gap: 10px;
+    padding: 10px 12px;
+    font-size: 15px;
+}
+
+.sidebar.offcanvas-lg .sidebar-nav .nav-icon {
+    display: block;
+}
+
+.topbar {
+    min-height: 68px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.dashboard-heading h1 {
+    font-size: clamp(26px, 2.5vw, 34px);
+}
+
+@media (max-width: 991.98px) {
+    .sidebar-heading {
+        min-height: 84px;
+        padding: 12px 18px;
+    }
+
+    .sidebar-brand strong {
+        max-width: 150px;
+        font-size: 17px;
+    }
+
+    .sidebar.offcanvas-lg .sidebar-nav .nav-link {
+        min-height: 46px;
+        font-size: 15px;
+    }
+
+    .topbar {
+        min-height: 62px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-heading h1 {
+        font-size: 26px;
     }
 }

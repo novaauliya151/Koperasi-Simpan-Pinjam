@@ -118,7 +118,9 @@
                                     {{ number_format($data['activeMembers']) }}
                                 </strong>
                                 <span class="stat-note">
-                                    dari {{ number_format($data['members']) }} anggota
+                                    dari {{ number_format($data['members']) }} anggota ·
+                                    {{ number_format($data['activeAccounts']) }} dari
+                                    {{ number_format($data['accounts']) }} akun aktif
                                 </span>
                             </div>
                         </div>
@@ -139,27 +141,6 @@
                                     {{ number_format($data['pendingMembers']) }}
                                 </strong>
                                 <span class="stat-note">Pendaftaran anggota menunggu</span>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-                <div class="col-12 col-md-6 col-xl-3">
-                    <article class="card stat-card stat-card-cyan h-100">
-                        <div class="card-body p-3">
-                            <span class="stat-icon stat-icon-blue">
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <circle cx="9" cy="8" r="3.5" />
-                                    <path d="M2 20a7 7 0 0 1 14 0M17 8h5m-2.5-2.5v5" />
-                                </svg>
-                            </span>
-                            <div class="stat-copy">
-                                <span class="stat-label">Total akun</span>
-                                <strong class="stat-value">
-                                    {{ number_format($data['accounts']) }}
-                                </strong>
-                                <span class="stat-note">
-                                    {{ number_format($data['activeAccounts']) }} akun aktif
-                                </span>
                             </div>
                         </div>
                     </article>

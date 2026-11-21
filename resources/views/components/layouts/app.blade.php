@@ -34,7 +34,7 @@
                     <a href="{{ route('dashboard') }}" class="sidebar-brand" id="appSidebarLabel">
                         <span class="brand-mark">K</span>
                         <span>
-                            <strong>SIMPAN PINJAM</strong>
+                            <strong>Koperasi Simpan Pinjam</strong>
                             <small>PORTAL KOPERASI</small>
                         </span>
                     </a>
@@ -61,7 +61,10 @@
                                 href="{{ route('dashboard') }}"
                             >
                                 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" />
+                                    <rect x="3" y="3" width="8" height="8" rx="1" />
+                                    <rect x="13" y="3" width="8" height="5" rx="1" />
+                                    <rect x="13" y="10" width="8" height="11" rx="1" />
+                                    <rect x="3" y="13" width="8" height="8" rx="1" />
                                 </svg>
                                 Dashboard
                             </a>
@@ -86,9 +89,10 @@
                                     href="{{ route('admin.saving-types.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M12 3v18M5 8h14M5 16h14" />
-                                        <circle cx="9" cy="8" r="2" />
-                                        <circle cx="15" cy="16" r="2" />
+                                        <ellipse cx="12" cy="6" rx="8" ry="3" />
+                                        <path d="M4 6v5c0 1.7 3.6 3 8 3s8-1.3 8-3V6" />
+                                        <path d="M4 11v5c0 1.7 3.6 3 8 3 1.5 0 2.9-.2 4-.6" />
+                                        <path d="M17 16h4m-2-2v4" />
                                     </svg>
                                     Jenis simpanan
                                 </a>
@@ -98,8 +102,8 @@
                                     href="{{ route('admin.loan-terms.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                        <rect x="3" y="5" width="18" height="14" rx="2" />
-                                        <path d="M7 10h10M7 14h5" />
+                                        <path d="M6 3h9l4 4v14H6z" />
+                                        <path d="M14 3v5h5M9 12h7M9 16h7" />
                                     </svg>
                                     Ketentuan pinjaman
                                 </a>
@@ -109,7 +113,9 @@
                                     href="{{ route('admin.reports.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M5 3h14v18H5zM8 8h8M8 12h8M8 16h5" />
+                                        <path d="M4 20V5M4 20h17" />
+                                        <path d="m7 16 4-5 3 2 5-7" />
+                                        <path d="M17 6h2v2" />
                                     </svg>
                                     Laporan
                                 </a>
@@ -146,8 +152,9 @@
                                     href="{{ route('petugas.simpanan.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M3 6h18M5 6v14h14V6M8 10h8M8 14h5" />
-                                        <path d="M9 3h6v3H9z" />
+                                        <rect x="3" y="6" width="18" height="13" rx="2" />
+                                        <circle cx="12" cy="12.5" r="2.5" />
+                                        <path d="M7 9h.01M17 16h.01M12 2v3m-2-2 2 2 2-2" />
                                     </svg>
                                     Setoran simpanan
                                 </a>
@@ -158,7 +165,8 @@
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
                                         <rect x="3" y="5" width="18" height="14" rx="2" />
-                                        <path d="M7 10h10M7 14h5" />
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path d="M7 9h.01M17 15h.01" />
                                     </svg>
                                     Pinjaman
                                 </a>
@@ -170,8 +178,9 @@
                                     href="{{ route('anggota.simpanan.index') }}"
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path d="M3 6h18M5 6v14h14V6M8 10h8M8 14h5" />
-                                        <path d="M9 3h6v3H9z" />
+                                        <rect x="3" y="6" width="18" height="13" rx="2" />
+                                        <circle cx="12" cy="12.5" r="2.5" />
+                                        <path d="M7 9h.01M17 16h.01M12 2v3m-2-2 2 2 2-2" />
                                     </svg>
                                     Simpanan saya
                                 </a>
@@ -182,7 +191,8 @@
                                 >
                                     <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
                                         <rect x="3" y="5" width="18" height="14" rx="2" />
-                                        <path d="M7 10h10M7 14h5" />
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path d="M7 9h.01M17 15h.01" />
                                     </svg>
                                     Pinjaman saya
                                 </a>
@@ -242,8 +252,35 @@
                     >
                         ☰
                     </button>
-                    <div class="topbar-title">Sistem Informasi Koperasi</div>
-                    <div class="topbar-date d-none d-sm-block">
+                    <div class="topbar-breadcrumb">
+                        <span>
+                            {{ match (auth()->user()->role) {
+                                'admin' => 'Administrasi',
+                                'petugas' => 'Operasional',
+                                default => 'Keanggotaan',
+                            } }}
+                        </span>
+                        <span class="breadcrumb-divider" aria-hidden="true">/</span>
+                        <strong>
+                            {{ request()->routeIs('dashboard', '*.dashboard')
+                                ? 'Dashboard'
+                                : 'Portal koperasi' }}
+                        </strong>
+                    </div>
+                    <a class="topbar-user" href="{{ route('profile.edit') }}">
+                        <span class="topbar-user-copy">
+                            <strong>{{ auth()->user()->name }}</strong>
+                            <small>
+                                {{ match (auth()->user()->role) {
+                                    'admin' => 'Administrator',
+                                    'petugas' => 'Petugas koperasi',
+                                    default => 'Anggota',
+                                } }}
+                            </small>
+                        </span>
+                        <span class="topbar-user-caret" aria-hidden="true">⌄</span>
+                    </a>
+                    <div class="topbar-date d-none d-xl-block">
                         {{ now()->locale('id')->translatedFormat('l, d F Y') }}
                     </div>
                 </header>

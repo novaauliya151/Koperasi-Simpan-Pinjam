@@ -8,6 +8,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/beranda.css',
                 'resources/css/legacy.css',
                 'resources/js/app.js',
             ],
@@ -26,3 +27,6 @@ export default defineConfig({
         },
     },
 });
+
+
+

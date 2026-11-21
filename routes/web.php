@@ -13,6 +13,7 @@ use App\Http\Controllers\Staff\LoanController;
 use App\Http\Controllers\Staff\InstallmentPaymentController;
 use App\Http\Controllers\Staff\MemberController;
 use App\Http\Controllers\Staff\SavingsTransactionController;
+use App\Http\Controllers\PublicHomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function (): void {
@@ -105,5 +106,5 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     });
 });
 
-Route::redirect('/', '/dashboard');
+Route::get('/', PublicHomeController::class)->name('home');
 

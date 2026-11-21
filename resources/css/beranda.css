@@ -1,0 +1,245 @@
+/* Gaya beranda mengikuti warna utama aplikasi dan melengkapi utilitas Bootstrap. */
+.public-site {
+    color: #344256;
+    font-family: var(--bs-body-font-family);
+}
+
+.public-site a {
+    text-decoration: none;
+}
+
+.public-topline {
+    background: var(--warna-primer-gelap);
+    color: #dbe4ef;
+    font-size: .875rem;
+}
+
+.public-topline a,
+.public-footer a {
+    color: #fff;
+}
+
+.public-navbar {
+    border-bottom: 1px solid var(--warna-garis);
+    background: #fff;
+}
+
+.public-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    color: var(--warna-teks);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.public-mark {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid var(--warna-aksen);
+    color: var(--warna-aksen);
+}
+
+.public-nav .nav-link {
+    color: #46566b;
+    font-size: .9rem;
+}
+
+.public-hero {
+    padding: clamp(4rem, 9vw, 7.5rem) 0;
+}
+
+.public-eyebrow {
+    color: #94701f;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.public-title,
+.public-heading {
+    color: var(--warna-teks);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.public-title {
+    max-width: 13ch;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.public-heading {
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+.public-lead,
+.public-copy {
+    color: var(--warna-teks-redup, #6d7b8d);
+    line-height: 1.75;
+}
+
+.public-lead {
+    max-width: 42rem;
+    font-size: 1.1rem;
+}
+
+.public-btn {
+    border: 1px solid var(--warna-aksen);
+    border-radius: .25rem;
+    background: var(--warna-aksen);
+    color: #fff;
+    font-weight: 600;
+}
+
+.public-btn:hover,
+.public-btn:focus {
+    border-color: #9f741d;
+    background: #9f741d;
+    color: #fff;
+}
+
+.public-btn-outline {
+    border: 1px solid var(--warna-primer);
+    border-radius: .25rem;
+    color: var(--warna-primer);
+    font-weight: 600;
+}
+
+.public-btn-outline:hover,
+.public-btn-outline:focus {
+    background: var(--warna-primer);
+    color: #fff;
+}
+
+.public-art,
+.public-card {
+    border: 1px solid var(--warna-garis);
+    background: #fff;
+}
+
+.public-art {
+    display: grid;
+    min-height: 22rem;
+    place-items: center;
+    background: #eef1f5;
+}
+
+.public-art-card {
+    width: min(78%, 22rem);
+    padding: 2rem;
+    border: 1px solid #d9e0e8;
+    background: #fff;
+}
+
+.public-art-icon {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    background: var(--warna-aksen-lembut, #f4f0e7);
+    color: var(--warna-primer);
+}
+
+.public-line {
+    height: .6rem;
+    margin-top: 1rem;
+    background: #e7ebf0;
+}
+
+.public-line-short {
+    width: 65%;
+    margin-top: .5rem;
+}
+
+.public-proof {
+    border-top: 1px solid var(--warna-garis);
+    border-bottom: 1px solid var(--warna-garis);
+    background: var(--warna-primer);
+    color: #fff;
+}
+
+.public-proof-item {
+    display: flex;
+    min-height: 6rem;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.25rem;
+    border-right: 1px solid rgb(255 255 255 / 12%);
+}
+
+.public-proof-item span {
+    color: #dbe4ef;
+    font-size: .85rem;
+}
+
+.public-section {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.public-muted {
+    background: #f4f6f8;
+}
+
+.public-card {
+    height: 100%;
+    border-top: 3px solid var(--warna-primer);
+}
+
+.public-card h3 {
+    color: var(--warna-teks);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.public-card p,
+.public-faq {
+    color: var(--warna-teks-redup, #6d7b8d);
+    line-height: 1.7;
+}
+
+.public-callout {
+    border-left: 3px solid var(--warna-aksen);
+    background: #f4f6f8;
+    color: #536174;
+}
+
+.public-simulation-result,
+.public-cta {
+    background: var(--warna-primer);
+}
+
+.public-step {
+    display: inline-grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 1rem;
+    place-items: center;
+    border: 1px solid #9cacc0;
+    color: var(--warna-primer);
+    font-weight: 700;
+}
+
+.public-footer {
+    background: #0c2340;
+    color: #dbe4ef;
+}
+
+.public-footer h2 {
+    color: #fff;
+}
+
+@media (max-width: 767.98px) {
+    .public-hero {
+        padding-top: 3.5rem;
+    }
+
+    .public-art {
+        min-height: 16rem;
+    }
+}
